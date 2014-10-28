@@ -16,6 +16,8 @@ unsigned long rollPressedTimer = 0;
 boolean modePressFlag = false;
 unsigned long modePressedTimer = 0;
 
+unsigned char animation[][2] = {{0,2},{0,3},{0,4},{0,5},{1,6},{2,7},{3,7},{4,7},{5,7},{6,6},{7,5},{7,4},{7,3},{7,2},{6,1},{5,0},{4,0},{3,0},{2,0},{1,1}};
+
 byte standbyCounter = 0;
 
 extern unsigned char diceFont[][8];
@@ -169,8 +171,16 @@ void doTimer()
   unsigned long endTime = startTime + (time*1000);//calculate end time
   Rb.blankDisplay();
   drawMyChar(19,0,0,0x00FF00);//in green
+  byte pixel = 0;
   while(millis() < endTime)
-  {/*do nothing until it is time*/}
+  {//do animation
+    drawMyChar(19,0,0,0x00FF00);//in green
+    Rb.setPixelXY(animation[pixel][0], animation[pixel][1], reduceBrightness(0xFF0000, Brightness));//black out a pixel
+    delay(50);
+    pixel++;
+    if(pixel >= 20)
+      pixel = 0;
+  }
   byte tempBrightness = Brightness;//save brightness
   Brightness = 255;//full brightness
   //Flash it a bit
